@@ -2,9 +2,9 @@
 //
 //   ----- General Macro for R3B CALIFA Analysis results
 //         Author: Hector Alvarez <hector.alvarez@usc.es>
-//         Last Update: 08/09/15 <pablo.cabanelas@usc.es>
+//         Last Update: 15/11/18 
 //         Comments:
-//			Checks the primary, crystalHits and caloHits characteristics.
+//			Checks the primary, crystal and hit characteristics.
 //			User configurable for additional studies.
 //	
 //  -------------------------------------------------------------------------
@@ -36,16 +36,15 @@ void checkResults() {
 	char title1[250];
 	
 	//SETTINGS 
-	char calVersion[50] = "v13_811";          //Calorimeter version (5.0, 7.05, 7.07, 7.09, 7.17, 7.07+7.17,7.09+7.17, 8.11)
-	Double_t Eproj = 2.00;                    //Gamma Energy in projectile frame in MeV 
-	Int_t totalEvents = 2000;                 //Events
+	Double_t Eproj = 0.100;                    //Gamma Energy in projectile frame in MeV 
+	Int_t totalEvents = 10000;                 //Events
 	Int_t multiplicity = 1;                   //Multiplicity (particles per event)
 	
 	Double_t threshold=0.050;		  //Threshold in MeV
 	Int_t ExpRes=5;			          //Exp. Resol in MeV
 
 	//FOR THE HISTOGRAMS AND PLOTS:
-	Double_t maxE = 5;                        //Maximum energy in MeV in the histos
+	Double_t maxE = 0.2;                        //Maximum energy in MeV in the histos
 
  	sprintf(title1,"%s","sim_out.root");  	
 	TFile *file1 = TFile::Open(title1);
@@ -54,82 +53,16 @@ void checkResults() {
 	
 	//END OF THE SETTING AREA
 	
-	Bool_t BARREL= kFALSE;
+	Bool_t BARREL= kTRUE;
 	Bool_t ENDCAP= kFALSE;
 	Double_t minThetaBarrel=0. , maxThetaBarrel=0.;
         Double_t minThetaEndCap=0. , maxThetaEndCap=0.;
+	
+	minThetaBarrel= 43.16;   //Angular coverture of BARREL 8.11
+	maxThetaBarrel= 135.35;  //Angular coverture of BARREL 8.11
+	minThetaEndCap= 9.59;    //Angular coverture of ENDCAP
+	maxThetaEndCap= 32.10;   //Angular coverture of ENDCAP
 
-	if(!strcmp(calVersion,"5.0")){
-		cout << "Warning: Calorimeter version 5.0 is not supported in this macro! "<< endl;
-	}
-	if(!strcmp(calVersion,"7.05")){
-		cout << "Using CALIFA version 7.05 "<< endl;
-		minThetaBarrel= 32.9;    //Angular coverture of BARREL 7.05
-		maxThetaBarrel= 134.7;   //Angular coverture of BARREL 7.05
-		BARREL=kTRUE;
-	}
-	else if(!strcmp(calVersion,"7.07")){
-		cout << "Using CALIFA version 7.07 "<< endl;
-		minThetaBarrel= 32.4;  //Angular coverture of BARREL 7.07
-		maxThetaBarrel= 134.2; //Angular coverture of BARREL 7.07
-		BARREL=kTRUE;
-	}
-	else if(!strcmp(calVersion,"7.09")){
-		cout << "Using CALIFA version 7.09 "<< endl;
-		minThetaBarrel= 32.;  //Angular coverture of BARREL 7.09
-		maxThetaBarrel= 135.; //Angular coverture of BARREL 7.09
-		BARREL=kTRUE;
-	}
-	else if(!strcmp(calVersion,"7.17")){
-		cout << "Using CALIFA version 7.17 "<< endl;
-		minThetaEndCap= 9.59;  //Angular coverture of ENDCAP 7.17
-		maxThetaEndCap= 32.10; //Angular coverture of ENDCAP 7.17
-		ENDCAP=kTRUE;
-	}
-	else if(!strcmp(calVersion,"7.07+7.17")){
-		cout << "Using CALIFA version 7.07+7.17 "<< endl;
-		minThetaBarrel= 32.4;  //Angular coverture of BARREL 7.07
-		maxThetaBarrel= 134.2; //Angular coverture of BARREL 7.07
-		minThetaEndCap= 9.59;  //Angular coverture of ENDCAP 7.17
-		maxThetaEndCap= 32.10; //Angular coverture of ENDCAP 7.17
-		BARREL=kTRUE;
-		ENDCAP=kTRUE;
-	}
-	else if(!strcmp(calVersion,"7.09+7.17")){
-		cout << "Using CALIFA version 7.09+7.17 "<< endl;
-		minThetaBarrel= 32.;  //Angular coverture of BARREL 7.09
-		maxThetaBarrel= 135.; //Angular coverture of BARREL 7.09
-		minThetaEndCap= 9.59;  //Angular coverture of ENDCAP 7.17
-		maxThetaEndCap= 32.10; //Angular coverture of ENDCAP 7.17
-		BARREL=kTRUE;		
-		ENDCAP=kTRUE;
-	}
-	else if(!strcmp(calVersion,"8.11")){
-		cout << "Using CALIFA version 8.11 "<< endl;
-		minThetaBarrel= 43.16;  //Angular coverture of BARREL 8.11
-		maxThetaBarrel= 135.35; //Angular coverture of BARREL 8.11
-		BARREL=kTRUE;
-	}	
-	else if(!strcmp(calVersion,"8.11+iPhos1.01")){
-		cout << "Using CALIFA version 8.11 + iPhos 1.01 "<< endl;
-		minThetaBarrel= 32.;  //Angular coverture of BARREL 7.09
-		maxThetaBarrel= 135.; //Angular coverture of BARREL 7.09
-		minThetaEndCap= 9.59;  //Angular coverture of ENDCAP 7.17
-		maxThetaEndCap= 32.10; //Angular coverture of ENDCAP 7.17
-		BARREL=kTRUE;		
-		ENDCAP=kTRUE;
-	}
-	else if(!strcmp(calVersion,"v13_811")){
-		cout << "Using CALIFA version v13_8.11 "<< endl;
-		minThetaBarrel= 43.16;   //Angular coverture of BARREL 8.11
-		maxThetaBarrel= 135.35;  //Angular coverture of BARREL 8.11
-		minThetaEndCap= 9.59;    //Angular coverture of ENDCAP
-		maxThetaEndCap= 32.10;   //Angular coverture of ENDCAP
-		BARREL=kTRUE;
-		ENDCAP=kTRUE;
-	}
-	else cout << "Error: Calorimeter version not correctly defined! "<< endl;
-		
 	// ----    Debug option   -------------------------------------------------
 	gDebug = 0;
 	// ------------------------------------------------------------------------
@@ -211,16 +144,16 @@ void checkResults() {
 	
 	//Crystal Hits (input)
 	TClonesArray* crystalHitCA;  
-	R3BCalifaCrystalCalDataSim** crystalHit;
-	crystalHitCA = new TClonesArray("R3BCalifaCrystalCalDataSim",5);
-	TBranch *branchCrystalHit = TCrystal->GetBranch("CalifaCrystalCalDataSim");
+	R3BCalifaCrystalCalData** crystalHit;
+	crystalHitCA = new TClonesArray("R3BCalifaCrystalCalData",5);
+	TBranch *branchCrystalHit = TCrystal->GetBranch("CalifaCrystalCalData");
 	branchCrystalHit->SetAddress(&crystalHitCA);
 
 	//Calo Hits (output)
 	TClonesArray* caloHitCA;  
-	R3BCalifaHitDataSim** caloHit;
-	caloHitCA = new TClonesArray("R3BCalifaHitDataSim",5);
-	TBranch *branchCaloHit = TCrystal->GetBranch("CalifaHitDataSim");
+	R3BCalifaHitData** caloHit;
+	caloHitCA = new TClonesArray("R3BCalifaHitData",5);
+	TBranch *branchCaloHit = TCrystal->GetBranch("CalifaHitData");
 	branchCaloHit->SetAddress(&caloHitCA);
 	
 	//MCTrack(input)
@@ -266,17 +199,17 @@ void checkResults() {
 		MCtracksPerEvent = MCTrackCA->GetEntries();
 		
 		if(crystalHitsPerEvent>0) {
-			crystalHit = new R3BCalifaCrystalCalDataSim*[crystalHitsPerEvent];
+			crystalHit = new R3BCalifaCrystalCalData*[crystalHitsPerEvent];
 			for(Int_t j=0;j<crystalHitsPerEvent;j++){
-				crystalHit[j] = new R3BCalifaCrystalCalDataSim;
-				crystalHit[j] = (R3BCalifaCrystalCalDataSim*) crystalHitCA->At(j);      
+				crystalHit[j] = new R3BCalifaCrystalCalData;
+				crystalHit[j] = (R3BCalifaCrystalCalData*) crystalHitCA->At(j);      
 			}
 		}
 		if(caloHitsPerEvent>0) {
-			caloHit = new R3BCalifaHitDataSim*[caloHitsPerEvent];
+			caloHit = new R3BCalifaHitData*[caloHitsPerEvent];
 			for(Int_t j=0;j<caloHitsPerEvent;j++){
-				caloHit[j] = new R3BCalifaHitDataSim;
-				caloHit[j] = (R3BCalifaHitDataSim*) caloHitCA->At(j);      
+				caloHit[j] = new R3BCalifaHitData;
+				caloHit[j] = (R3BCalifaHitData*) caloHitCA->At(j);      
 			}
 		}		
 		if(MCtracksPerEvent>0) {
@@ -481,9 +414,7 @@ void checkResults() {
 	}
 	c1->cd(4);	h4_T->Draw();
 	c1->cd();
-	//c1_2 = new TPad("c1_2", "c1_2",0.,0.,0.9,0.03);	
-	//c1_2->Draw();
-	//c1_2->cd();
+
 	TLatex *title = new TLatex(0.1,0.2,"Information from the primaries generated by the MC");
 	title->SetTextSize(0.6);
 	title->Draw();
@@ -831,8 +762,7 @@ void checkResults() {
 		photopeakParticles3Sigma_endcap = h2_CC_endcap->Integral(binLeft3Sigma_endcap,binRight3Sigma_endcap);
         }
 	
-	cout << endl << endl << "CALIFA version: " << calVersion 
-	<< "      Particle energy: " << Eproj 
+	cout << endl << endl  << "      Particle energy: " << Eproj 
 	<< "      Events:  " << totalEvents  << endl;	
 	cout << "Multiplicity: " <<  multiplicity << " particles/event" << endl;
 	cout << "Threshold: " <<  threshold << " MeV" << endl;
@@ -890,7 +820,7 @@ void checkResults() {
 	char oT27[250];	char oT28[250];	char oT29[250];	char oT30[250];	char oT31[250];	char oT32[250];
 	char oT33[250];	char oT34[250];	char oT35[250];	char oT36[250];	char oT37[250];	char oT38[250];
 	
-  	sprintf(oT1,"%s%s%s%f%s%i","CALIFA version: ",calVersion,";  Particle energy: ",Eproj," MeV;  Events: ",totalEvents);  	
+  	sprintf(oT1,"%s%f%s%i","Particle energy: ",Eproj," MeV;  Events: ",totalEvents);  	
 	sprintf(oT2,"%s%i%s%f%s%i%s","Multiplicity: ",multiplicity,";   Threshold: ",threshold," MeV;    Exp. resolution: ", ExpRes,"%");
   	sprintf(oT3,"%s%i%s","Particles emitted: totalEvents * multiplicity = ",totalEvents *  multiplicity," total particles ");
 	sprintf(oT4,"%s%f%s%f","Total crystals with signal: ",h1_Cry->GetEntries(), "  above threshold: ",h1_Cry_count->GetEntries()); 
