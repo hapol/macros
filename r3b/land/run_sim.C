@@ -112,7 +112,7 @@ void run_sim(Int_t nNeutrons = 4, Int_t nEvents = 100, Int_t beamE = 600, Int_t 
 
     // dTof
     run->AddModule(
-        new R3BdTof("dtof_v17a.geo.root",
+        new R3BTofd("dtof_v17a.geo.root",
                     { -155.824045 + (2.7 * 10) * TMath::Cos(16.7 * TMath::DegToRad()), 0.523976, 761.870346 },
                     { "", -90., +16.7, 90. }));
 

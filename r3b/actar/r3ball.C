@@ -192,7 +192,7 @@ void r3ball(Int_t nEvents = 1,
 
   // dTof
   if (fDetList->FindObject("DTOF") ) {
-    R3BDetector* dTof = new R3BdTof("dTof", kTRUE);
+    R3BDetector* dTof = new R3BTofd("Tofd", kTRUE);
     dTof->SetGeometryFileName(((TObjString*)fDetList->GetValue("DTOF"))->GetString().Data());
     run->AddModule(dTof);
   }

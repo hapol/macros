@@ -180,7 +180,7 @@ void r3ball(Int_t nEvents = 1,
 
   // dTof
   if (fDetList->FindObject("DTOF") ) {
-    run->AddModule(new R3BdTof(((TObjString*)fDetList->GetValue("DTOF"))->GetString()));
+    run->AddModule(new R3BTofd(((TObjString*)fDetList->GetValue("DTOF"))->GetString()));
   }
 
   // GFI detector

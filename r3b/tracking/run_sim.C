@@ -95,7 +95,7 @@ void run_sim()
     //run->AddModule(new R3BTof("tof_v17a.geo.root", { -417.359574, 2.400000, 960.777114 }, { "", -90., +31., 90. }));
 
     // dTof
-    run->AddModule(new R3BdTof("dtof_v17a.geo.root", { (762. - 308.8)*TMath::Tan(-18.*TMath::DegToRad()) - 42., 0.523976, 762.}, { "", -90., +16.7, 90. }));
+    run->AddModule(new R3BTofd("dtof_v17a.geo.root", { (762. - 308.8)*TMath::Tan(-18.*TMath::DegToRad()) - 42., 0.523976, 762.}, { "", -90., +16.7, 90. }));
 
     // MFI
     //run->AddModule(new R3BMfi("mfi_v17a.geo.root", { -63.82, 0., 520.25 }, { "", 90., +13.5, 90. })); // s412

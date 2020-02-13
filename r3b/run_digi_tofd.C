@@ -21,12 +21,12 @@ void run_digi_dTof()
     // ---------------------------------------------------------------------------
     
     // dTOF
-    R3BdTofDigitizer* dtof_digitizer = new R3BdTofDigitizer();
-    run->AddTask(dtof_digitizer);
+    R3BTofdDigitizer* tofd_digitizer = new R3BTofdDigitizer();
+    run->AddTask(tofd_digitizer);
     
-    dtof_digitizer->SetSigma_y( 1. );
-    dtof_digitizer->SetSigma_t( 0.03 );
-    dtof_digitizer->SetSigma_ELoss( 0.014  ); //0.0015
+    tofd_digitizer->SetSigma_y( 1. );
+    tofd_digitizer->SetSigma_t( 0.03 );
+    tofd_digitizer->SetSigma_ELoss( 0.014  ); //0.0015
     
 
     // ---------------------------------------------------------------------------
