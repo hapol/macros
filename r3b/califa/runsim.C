@@ -54,8 +54,8 @@ void runsim(Int_t nEvents = 0)
     Bool_t fTof = false; // ToF Detector
     TString fTofGeo = "tof_v13a.geo.root";
 
-    Bool_t fmTof = false; // mTof Detector
-    TString fmTofGeo = "mtof_v13a.geo.root";
+    //Bool_t fmTof = false; // mTof Detector
+    //TString fmTofGeo = "mtof_v13a.geo.root";
 
     Bool_t fGfi = false; // Fiber Detector
     TString fGfiGeo = "gfi_v13a.geo.root";
@@ -185,10 +185,10 @@ void runsim(Int_t nEvents = 0)
     }
 
     // mTof
-    if (fmTof)
-    {
-        run->AddModule(new R3BmTof(fmTofGeo));
-    }
+    //if (fmTof)
+    //{
+    //    run->AddModule(new R3BmTof(fmTofGeo));
+    //}
 
     // GFI detector
     if (fGfi)

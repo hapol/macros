@@ -44,7 +44,7 @@ void run_digi()
     run->AddTask(sfi_digitizer);
 
     // dTOF
-    R3BTofdDigitizer* dtof_digitizer = new R3BTofdDigitizer();
+    R3BTofdDigitizer* tofd_digitizer = new R3BTofdDigitizer();
     run->AddTask(tofd_digitizer);
     tofd_digitizer->SetSigma_y( 1. );
     tofd_digitizer->SetSigma_t( 0.03 );
