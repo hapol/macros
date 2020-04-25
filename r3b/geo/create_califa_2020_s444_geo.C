@@ -1,6 +1,7 @@
 // FINAL CALIFA CARREL + iPHOS VERSION (NOV 2019)
 // Requires files CLF-ALL-oneCrystal.txt and CLF-ALL-onePart.txt
 // Requires file califa_InstalledCrystals_Nov2019.txt for the installed crystals
+// Includes relative displacement between CALIFA halves and the target position
 #include "TGeoManager.h"
 #include "TMath.h"
 #include <iomanip>
@@ -119,6 +120,7 @@ void create_califa_geo(const char* geoTag = "")
     TGeoVolume* pWorld = new TGeoVolume("CalifaWorld", pCBWorld, pAirMedium);
 
     TGeoCombiTrans* t0 = new TGeoCombiTrans();
+    t0->SetTranslation(0, 0, -2.4); // S444 2020 (2.4 displacement of target from nominal towards SIS)
     TGeoCombiTrans* pGlobalc = GetGlobalPosition(t0);
 
     // add the sphere as Mother Volume
@@ -634,18 +636,32 @@ void create_califa_geo(const char* geoTag = "")
         { // rotation around Z
             // rotAlvFinal[i * 32 + j] = new TGeoRotation((*rotOnZ[j]) * (*rotAlv[i]));
             // alv_cm_rot[2 * i] = (*rotationOnZ[j]) * alv_cm[2 * i];
+
+            // add separation between the two halves for S444 2020
+            Double_t disp_halfBarrel; // 2.5cm distance between the halves
+            if (j < 16)
+                disp_halfBarrel = 1.25;
+            else
+                disp_halfBarrel = -1.25;
+
             if (i > 18 && j > 7)
                 continue;
 
             if (i > 18)
             {
+                // add separation between the two halves for S444 2020
+                if (j < 4)
+                    disp_halfBarrel = 1.25;
+                else
+                    disp_halfBarrel = -1.25;
+
                 rotAlvFinal[i * 32 + 4 * j] = new TGeoRotation((*rotOnZ[4 * j]) * (*rotAlv[i]));
                 alv_cm_rot[2 * i] = (*rotationOnZ[4 * j]) * alv_cm[2 * i];
                 if (isCrystalInstalled(i + 1, j))
                 {
                     pWorld->AddNode(Alv_vol[i],
                                     j,
-                                    new TGeoCombiTrans(alv_cm_rot[2 * i].X(),
+                                    new TGeoCombiTrans(alv_cm_rot[2 * i].X() + disp_halfBarrel,
                                                        alv_cm_rot[2 * i].Y(),
                                                        alv_cm_rot[2 * i].Z(),
                                                        rotAlvFinal[i * 32 + 4 * j]));
@@ -659,7 +675,7 @@ void create_califa_geo(const char* geoTag = "")
                 {
                     pWorld->AddNode(Alv_vol[i],
                                     j,
-                                    new TGeoCombiTrans(alv_cm_rot[2 * i].X(),
+                                    new TGeoCombiTrans(alv_cm_rot[2 * i].X() + disp_halfBarrel,
                                                        alv_cm_rot[2 * i].Y(),
                                                        alv_cm_rot[2 * i].Z(),
                                                        rotAlvFinal[i * 32 + j]));
