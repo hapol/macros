@@ -36,11 +36,29 @@ void runsim(Int_t nEvents = 0)
 
     Bool_t fXBall = false; // Crystal Ball
     TString fXBallGeo = "cal_v13a.geo.root";
-
     Bool_t fCalifa = true; // Califa Calorimeter
-    TString fCalifaGeo = "califa_2020.geo.root";
-    Int_t fCalifaGeoVer = 2020;
-    Double_t fCalifaNonU = 1.0; // Non-uniformity: 1 means +-1% max deviation
+    Bool_t CalifaExpConfig = true;  // Experimental Set-Up for CALIFA
+    TString fCalifaGeo;
+    Int_t fCalifaGeoVer;
+    Double_t fCalifaNonU;
+    TString califaSimParamsFile;
+
+
+    if (CalifaExpConfig) {
+
+          fCalifaGeo = "califa_2020_s444.geo.root"; // Experimental Set-Up: 1204 Crystals (1024 Barrel + 180 IPhos), Jan - Feb 2020
+          fCalifaGeoVer = 2020;
+          fCalifaNonU = 1.0; // Non-uniformity: 1 means +-1% max deviation
+
+      }
+
+    else {
+
+        fCalifaGeo = "califa_2020.geo.root";
+        fCalifaGeoVer = 2020;
+        fCalifaNonU = 1.0; // Non-uniformity: 1 means +-1% max deviation
+    }
+
 
     Bool_t fTracker = false; // Tracker
     TString fTrackerGeo = "ams_s444.geo.root";
@@ -88,6 +106,12 @@ void runsim(Int_t nEvents = 0)
     TString r3b_confdir = dir + "/gconfig/";
     gSystem->Setenv("CONFIG_DIR", r3b_confdir.Data());
     r3b_confdir.ReplaceAll("//", "/");
+
+    if(CalifaExpConfig){
+
+      califaSimParamsFile = r3bdir + "/r3b/califa/CalifaExpPars4Sim.par";
+      califaSimParamsFile.ReplaceAll("//","/");
+    }
 
     // ----    Debug option   -------------------------------------------------
     gDebug = 0;
@@ -286,15 +310,15 @@ void runsim(Int_t nEvents = 0)
         Double_t pdgId = 22;       // 22 for gamma emission, 2212 for proton emission
         Double_t theta1 = 0.;      // polar angle distribution: lower edge (50)
         Double_t theta2 = 180.;    // polar angle distribution: upper edge (51)
-        Double_t momentum = 0.001; // GeV/c
-        Int_t multiplicity = 1;
+        Double_t momentum = 0.003; // GeV/c
+        Int_t multiplicity = 3;
         R3BCALIFATestGenerator* gammasGen = new R3BCALIFATestGenerator(pdgId, multiplicity);
         gammasGen->SetThetaRange(theta1, theta2);
         gammasGen->SetCosTheta();
         gammasGen->SetPRange(momentum, momentum);
         gammasGen->SetPhiRange(0., 360.); //(2.5,4)
         gammasGen->SetBoxXYZ(-0.1, 0.1, -0.1, 0.1, -0.1, 0.1);
-        gammasGen->SetLorentzBoost(0.8197505718204776); // beta=0.8197505718204776 for 700 A MeV
+        gammasGen->SetLorentzBoost(0.0); // beta=0.8197505718204776 for 700 A MeV
         // add the gamma generator
         primGen->AddGenerator(gammasGen);
     }
@@ -303,6 +327,15 @@ void runsim(Int_t nEvents = 0)
     //-------Set visualisation flag to true------------------------------------
     run->SetStoreTraj(fVis);
 
+    FairRuntimeDb* rtdb = run->GetRuntimeDb();
+
+
+    FairParAsciiFileIo* parIo1 = new FairParAsciiFileIo(); // Ascii file
+    parIo1->open(califaSimParamsFile, "in");
+
+    rtdb->setFirstInput(parIo1);
+    rtdb->print();
+
     FairLogger::GetLogger()->SetLogVerbosityLevel("LOW");
 
     // ----- Initialize CalifaDigitizer task (from Point Level to Cal Level)
@@ -310,26 +343,31 @@ void runsim(Int_t nEvents = 0)
     {
         R3BCalifaDigitizer* califaDig = new R3BCalifaDigitizer();
         califaDig->SetNonUniformity(fCalifaNonU);
-        califaDig->SetExpEnergyRes(6.); // 5. means 5% at 1 MeV
+        califaDig->SetRealConfig(CalifaExpConfig);   // Real Configuration goes here
+        califaDig->SetExpEnergyRes(6.);             // 5. means 5% at 1 MeV
         califaDig->SetComponentRes(6.);
-        califaDig->SetDetectionThreshold(0.0); // in GeV!! 0.000010 means 10 keV
+        califaDig->SetDetectionThreshold(0.000010); // in GeV!! 0.000010 means 10 keV
+        califaDig->SetParContainers();              // Only if SetRealConfig is set to TRUE!
         run->AddTask(califaDig);
     }
+
 
     // ----- Initialize Califa HitFinder task (from CrystalCal Level to Hit Level)
     if (fCalifaHitFinder)
     {
         R3BCalifaCrystalCal2Hit* califaHF = new R3BCalifaCrystalCal2Hit();
         califaHF->SetCrystalThreshold(0.000010);  // in GeV!! 0.000010 means 10 KeV
-        califaHF->SetSquareWindowAlg(0.25, 0.25); //[0.25 around 14.3 degrees, 3.2 for the complete calorimeter]
+        califaHF->SetSquareWindowAlg(0.0000001, 0.0000001); //[0.25 around 14.3 degrees, 3.2 for the complete calorimeter]
         run->AddTask(califaHF);
     }
+
+    // -----   Runtime database   ---------------------------------------------
+
+
 
     // -----   Initialize simulation run   ------------------------------------
     run->Init();
 
-    // -----   Runtime database   ---------------------------------------------
-    FairRuntimeDb* rtdb = run->GetRuntimeDb();
     Bool_t kParameterMerged = kTRUE;
     FairParRootFileIo* parOut = new FairParRootFileIo(kParameterMerged);
     parOut->open(ParFile.Data());
