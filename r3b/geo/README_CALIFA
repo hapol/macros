@@ -1,0 +1,42 @@
+List of avaliable geometry generator files for CALIFA
+Last update: 29/04/20 (questions to: hector.alvarez@usc.es)
+
+- Macro: create_califa_final_barrel_iphos_geo.C
+  CALIFA BARREL + iPHOS (from Nov 2019).
+  Most recent version from the CAD drawings from Univ. Vigo.
+  It requires the files CLF-ALL-oneCrystal.txt and CLF-ALL-onePart.txt: These files
+  include vertex information from the crystals and alveoli.
+  It requires a file with a list of included crystals.
+    califa_InstalledCrystals_Nov2019.txt for the installed crystals in Nov2019 or
+    califa_AllCrystalsIn.txt for all possible crystals in.
+    There will be no difference with respect to the analysis, but the simulation
+    will only create the alveoli with crystals in the case of the first file.
+
+- Macro: create_califa_2020_s454_geo.C
+  Same as before, but with the alignment of experiments
+  s454:
+  a 2.4 cm displacement of target from nominal (towards SIS) and
+  a separation between the two halves of 2.5 cm (1.25 cm each half)
+
+
+- Macro: create_califa_feb19__geo.C
+  Same as before, but with the crystals of the demonstrator and the
+  alignment of experiments s444(2019), s454(2019), s473(2019):
+  a 2.4 cm displacement of target from nominal (towards SIS) and
+  a separation between the two halves of 2.5 cm (1.25 cm each half)
+
+
+Auxiliary files:
+CLF-ALL-oneCrystal.txt, CLF-ALL-onePart.txt,
+califa_AllCrystalsIn.txt, califa_InstalledCrystals_Nov2019.txt
+
+
+Old files, unsupported in present dev version:
+create_califa_geo.C
+create_califa_10_v8.11_geo.C
+create_califa_15_v8.11_iPhos1.02_geo.C
+create_califa_15_v8.11_iPhos1.03_geo.C
+create_califa_16_v8.11_cc0.2_geo.C
+create_califa_17_v8.11_cc0.2_geo.C
+create_califa_demonstrator.C
+create_califa_demonstrator_s444.C
