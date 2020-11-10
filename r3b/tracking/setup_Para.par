@@ -10,6 +10,8 @@ RotationZ: Double_t 0.
 DimensionX: Double_t 3.5
 DimensionY: Double_t 3.5
 DimensionZ: Double_t 0.06
+SigmaX: 1.
+SigmaY: 0.
 Z: Double_t 1.715
 A: Double_t 2.58133
 Density: Double_t 1.
@@ -25,6 +27,8 @@ RotationZ: Double_t 0.
 DimensionX: Double_t 2.25
 DimensionY: Double_t 2.25
 DimensionZ: Double_t 0.0052
+SigmaX: 0.001
+SigmaY: 0.
 Z: Double_t 14.
 A: Double_t 28.0855
 Density: Double_t 2.33
@@ -40,6 +44,8 @@ RotationZ: Double_t 0.
 DimensionX: Double_t 20.
 DimensionY: Double_t 20.
 DimensionZ: Double_t 0.02
+SigmaX: 0.002
+SigmaY: 0.
 Z: Double_t 5.57354
 A: Double_t 11.0723
 Density: Double_t 1.032
@@ -55,6 +61,8 @@ RotationZ: Double_t 0.
 DimensionX: Double_t 20.
 DimensionY: Double_t 12.5
 DimensionZ: Double_t 0.01
+SigmaX: 0.005
+SigmaY: 0.
 Z: Double_t 5.57354
 A: Double_t 11.0723
 Density: Double_t 1.032
@@ -70,6 +78,8 @@ RotationZ: Double_t 0.
 DimensionX: Double_t 50.
 DimensionY: Double_t 50.
 DimensionZ: Double_t 0.05
+SigmaX: 0.002
+SigmaY: 0.
 Z: Double_t 5.57354
 A: Double_t 11.0723
 Density: Double_t 1.032
@@ -85,6 +95,8 @@ RotationZ: Double_t 0.
 DimensionX: Double_t 13.5
 DimensionY: Double_t 50.
 DimensionZ: Double_t 0.25
+SigmaX: 2.7
+SigmaY: 0.
 Z: Double_t 5.57354
 A: Double_t 11.0723
 Density: Double_t 1.032
