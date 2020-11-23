@@ -6,9 +6,9 @@ void runsim(Int_t nEvents = 0)
     TString OutFile = "sim_out.root"; // Output file for data
     TString ParFile = "sim_par.root"; // Output file for params
 
-    Bool_t fVis = true;              // Store tracks for visualization
-    Bool_t fUserPList = false;       // Use of R3B special physics list
-    Bool_t fR3BMagnet = true;        // Magnetic field definition
+    Bool_t fVis = true;             // Store tracks for visualization
+    Bool_t fUserPList = false;      // Use of R3B special physics list
+    Bool_t fR3BMagnet = true;       // Magnetic field definition
     Bool_t fCalifaDigitizer = true; // Apply hit digitizer task
     Bool_t fCalifaHitFinder = true; // Apply hit finder task
 
@@ -36,29 +36,29 @@ void runsim(Int_t nEvents = 0)
 
     Bool_t fXBall = false; // Crystal Ball
     TString fXBallGeo = "cal_v13a.geo.root";
-    Bool_t fCalifa = true; // Califa Calorimeter
-    Bool_t CalifaExpConfig = true;  // Experimental Set-Up for CALIFA
+    Bool_t fCalifa = true;          // Califa Calorimeter
+    Bool_t CalifaExpConfig = false; // Experimental Set-Up for CALIFA
     TString fCalifaGeo;
     Int_t fCalifaGeoVer;
     Double_t fCalifaNonU;
     TString califaSimParamsFile;
 
+    if (CalifaExpConfig)
+    {
 
-    if (CalifaExpConfig) {
+        fCalifaGeo =
+            "califa_2020_s444.geo.root"; // Experimental Set-Up: 1204 Crystals (1024 Barrel + 180 IPhos), Jan - Feb 2020
+        fCalifaGeoVer = 2020;
+        fCalifaNonU = 1.0; // Non-uniformity: 1 means +-1% max deviation
+    }
 
-          fCalifaGeo = "califa_2020_s444.geo.root"; // Experimental Set-Up: 1204 Crystals (1024 Barrel + 180 IPhos), Jan - Feb 2020
-          fCalifaGeoVer = 2020;
-          fCalifaNonU = 1.0; // Non-uniformity: 1 means +-1% max deviation
-
-      }
-
-    else {
+    else
+    {
 
         fCalifaGeo = "califa_2020.geo.root";
         fCalifaGeoVer = 2020;
         fCalifaNonU = 1.0; // Non-uniformity: 1 means +-1% max deviation
     }
-
 
     Bool_t fTracker = false; // Tracker
     TString fTrackerGeo = "ams_s444.geo.root";
@@ -72,8 +72,8 @@ void runsim(Int_t nEvents = 0)
     Bool_t fTof = false; // ToF Detector
     TString fTofGeo = "tof_v13a.geo.root";
 
-    //Bool_t fmTof = false; // mTof Detector
-    //TString fmTofGeo = "mtof_v13a.geo.root";
+    // Bool_t fmTof = false; // mTof Detector
+    // TString fmTofGeo = "mtof_v13a.geo.root";
 
     Bool_t fGfi = false; // Fiber Detector
     TString fGfiGeo = "gfi_v13a.geo.root";
@@ -107,10 +107,11 @@ void runsim(Int_t nEvents = 0)
     gSystem->Setenv("CONFIG_DIR", r3b_confdir.Data());
     r3b_confdir.ReplaceAll("//", "/");
 
-    if(CalifaExpConfig){
+    if (CalifaExpConfig)
+    {
 
-      califaSimParamsFile = r3bdir + "/r3b/califa/CalifaExpPars4Sim.par";
-      califaSimParamsFile.ReplaceAll("//","/");
+        califaSimParamsFile = r3bdir + "/r3b/califa/CalifaExpPars4Sim.par";
+        califaSimParamsFile.ReplaceAll("//", "/");
     }
 
     // ----    Debug option   -------------------------------------------------
@@ -209,7 +210,7 @@ void runsim(Int_t nEvents = 0)
     }
 
     // mTof
-    //if (fmTof)
+    // if (fmTof)
     //{
     //    run->AddModule(new R3BmTof(fmTofGeo));
     //}
@@ -329,12 +330,14 @@ void runsim(Int_t nEvents = 0)
 
     FairRuntimeDb* rtdb = run->GetRuntimeDb();
 
+    if (CalifaExpConfig)
+    {
+        FairParAsciiFileIo* parIo1 = new FairParAsciiFileIo(); // Ascii file
+        parIo1->open(califaSimParamsFile, "in");
 
-    FairParAsciiFileIo* parIo1 = new FairParAsciiFileIo(); // Ascii file
-    parIo1->open(califaSimParamsFile, "in");
-
-    rtdb->setFirstInput(parIo1);
-    rtdb->print();
+        rtdb->setFirstInput(parIo1);
+        rtdb->print();
+    }
 
     FairLogger::GetLogger()->SetLogVerbosityLevel("LOW");
 
@@ -343,27 +346,24 @@ void runsim(Int_t nEvents = 0)
     {
         R3BCalifaDigitizer* califaDig = new R3BCalifaDigitizer();
         califaDig->SetNonUniformity(fCalifaNonU);
-        califaDig->SetRealConfig(CalifaExpConfig);   // Real Configuration goes here
-        califaDig->SetExpEnergyRes(6.);             // 5. means 5% at 1 MeV
+        califaDig->SetRealConfig(CalifaExpConfig); // Real Configuration goes here
+        califaDig->SetExpEnergyRes(6.);            // 5. means 5% at 1 MeV
         califaDig->SetComponentRes(6.);
         califaDig->SetDetectionThreshold(0.000010); // in GeV!! 0.000010 means 10 keV
         califaDig->SetParContainers();              // Only if SetRealConfig is set to TRUE!
         run->AddTask(califaDig);
     }
 
-
     // ----- Initialize Califa HitFinder task (from CrystalCal Level to Hit Level)
     if (fCalifaHitFinder)
     {
         R3BCalifaCrystalCal2Hit* califaHF = new R3BCalifaCrystalCal2Hit();
         califaHF->SetCrystalThreshold(0.000010);  // in GeV!! 0.000010 means 10 KeV
-        califaHF->SetSquareWindowAlg(0.0000001, 0.0000001); //[0.25 around 14.3 degrees, 3.2 for the complete calorimeter]
+        califaHF->SetSquareWindowAlg(0.25, 0.25); //[0.25 around 14.3 degrees, 3.2 for the complete calorimeter]
         run->AddTask(califaHF);
     }
 
     // -----   Runtime database   ---------------------------------------------
-
-
 
     // -----   Initialize simulation run   ------------------------------------
     run->Init();
