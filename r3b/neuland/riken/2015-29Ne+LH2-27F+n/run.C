@@ -61,9 +61,9 @@ void Simulate(const RunConfig& cfg)
     // Primaries
     auto primGen = new FairPrimaryGenerator();
     // auto gen = new R3BPhaseSpaceGenerator();
-    // gen->SetBeamEnergyAMeV(215);
-    // gen->SetErelkeV(1000);
-    // gen->AddHeavyIon({ "F-27", 9, 27, 5, 0., 25.17527 });
+    // gen->Beam.SetEnergyDistribution(R3BDistribtuion1D::Delta(215));
+    // gen->SetErelDistribution(R3BDistribtuion1D::Delta(1000));
+    // gen->AddParticle({ "F-27", 9, 27, 5, 0., 25.17527 });
     // gen->AddParticle(2112);
     // primGen->AddGenerator(gen);
     primGen->AddGenerator(new R3BAsciiGenerator("siminput_29Ne_LH2_1n.dat"));

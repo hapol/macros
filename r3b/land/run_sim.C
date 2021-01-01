@@ -88,8 +88,8 @@ void run_sim(Int_t nNeutrons = 4, Int_t nEvents = 100, Int_t beamE = 600, Int_t 
     // run->AddModule(new R3BSTaRTra("startra_v16-300_2layers.geo.root", { 0., 0., 20. }));
 
     // CALIFA
-    //R3BCalifa* califa = new R3BCalifa("califa_2020.geo.root");
-    //califa->SelectGeometryVersion(2020);
+    // R3BCalifa* califa = new R3BCalifa("califa_2020.geo.root");
+    // califa->SelectGeometryVersion(2020);
     // run->AddModule(califa);
 
     // Fi4 detector
@@ -154,8 +154,9 @@ void run_sim(Int_t nNeutrons = 4, Int_t nEvents = 100, Int_t beamE = 600, Int_t 
         primGen->AddGenerator(boxGen);
 
         // 128-Sn fragment
-        R3BIonGenerator* ionGen = new R3BIonGenerator(50, 128, 50, 10, 0., 0., 1.3);
-        ionGen->SetSpotRadius(0.1, -300., 0.);
+        R3BIonGenerator* ionGen = new R3BIonGenerator(50, 128, 50, 10, 1.3);
+        ionGen->Beam.SetVertexDistribution(
+            R3BDistribution3D::Prism(R3BDistribution2D::Circle({ 0., 0. }, 0.1), R3BDistribution1D::Delta(-300)));
         primGen->AddGenerator(ionGen);
 
         // neutrons

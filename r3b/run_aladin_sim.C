@@ -139,8 +139,9 @@ void run_aladin_sim()
         primGen->AddGenerator(boxGen);
 
         // 128-Sn fragment
-        R3BIonGenerator* ionGen = new R3BIonGenerator(50, 128, 50, 10, 0., 0., 1.3);
-        ionGen->SetSpotRadius(0.1, -300., 0.);
+        R3BIonGenerator* ionGen = new R3BIonGenerator(50, 128, 50, 10, 1.3);
+        ionGen->Beam.SetVertexDistribution(
+            R3BDistribution3D::Prism(R3BDistribution2D::Circle({ 0., 0. }, 0.1), R3BDistribution1D::Delta(-300)));
         primGen->AddGenerator(ionGen);
 
         // neutrons
